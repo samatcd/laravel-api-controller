@@ -6,6 +6,47 @@ use {{model.fullName}};
 
 class {{controller.name}} extends Controller
 {
+
+    /**
+     * Default Fields to response with.
+     *
+     * @var array
+     */
+    protected $defaultFields = ['*'];
+
+    /**
+     * Set the default sorting for queries.
+     *
+     * @var string
+     */
+    protected $defaultSort = null;
+
+    /**
+     * Number of items displayed at once if not specified.
+     * There is no limit if it is 0 or false.
+     *
+     * @var int
+     */
+    protected $defaultLimit = 25;
+
+    /**
+     * Maximum limit that can be set via $_GET['limit'].
+     *
+     * @var int
+     */
+    protected $maximumLimit = 100;
+
+    /**
+     * WhiteList of includable methods (HasOne / HasMany)
+     */
+    protected $includesWhitelist = [];
+
+    /**
+     * Blacklist of blockable methods (HasOne / HasMany)
+     */
+    protected $includesBlacklist = [];
+
+
     /**
      * Eloquent model.
      *
@@ -16,31 +57,53 @@ class {{controller.name}} extends Controller
         return {{model.name}}::class;
     }
 
+     /**
+     * Get the validation rules for create.
+     *
+     * @return array
+     */
+    protected function rulesForCreate(): array
+    {
+        return [];
+    }
 
-	/**
+    /**
+     * Get the validation rules for update.
+     *
+     * @param int $id
+     *
+     * @return array
+     */
+    protected function rulesForUpdate(/* @scrutinizer ignore-unused */$id): array
+    {
+        return [];
+    }
+
+
+    /**
      * Display a listing of the resource.
      * GET /api/{resource}.
      *
-	 * @param Request $request
-	 *
-     * @return Response
-     */
-    public function index(Request $request)
-	{
-		return parent::index($request);
-	}
-
-	   /**
-     * Store a newly created resource in storage.
-     * POST /api/{resource}.
-	 *
-	 * @param Request $request
+     * @param Request $request
      *
      * @return Response
      */
+    public function index(Request $request)
+    {
+        return $this->handleIndexAction($request);
+    }
+
+   /**
+    * Store a newly created resource in storage.
+    * POST /api/{resource}.
+	  *
+	  * @param Request $request
+    *
+    * @return Response
+    */
     public function store(Request $request)
     {
-        return parent::store($request);
+        return $this->handleStoreAction($request);
     }
 
     /**
@@ -48,13 +111,13 @@ class {{controller.name}} extends Controller
      * GET /api/{resource}/{id}.
      *
      * @param int $id
-	 * @param Request $request
+	   * @param Request $request
      *
      * @return Response
      */
     public function show($id, Request $request)
     {
-		return parent::show($id, $request);
+		    return $this->handleShowAction($id, $request);
     }
 
     /**
@@ -62,13 +125,13 @@ class {{controller.name}} extends Controller
      * PUT /api/{resource}/{id}.
      *
      * @param int $id
-	 * @param Request $request
+	   * @param Request $request
      *
      * @return Response
      */
     public function update($id, Request $request)
     {
-        return parent::update($id, $request);
+        return $this->handleUpdateAction($id, $request);
     }
 
     /**
@@ -76,13 +139,13 @@ class {{controller.name}} extends Controller
      * DELETE /api/{resource}/{id}.
      *
      * @param int $id
-	 * @param Request $request
+	   * @param Request $request
      *
      * @return Response
      */
     public function destroy($id, Request $request)
     {
-        return parent::destroy($id, $request);
+        return $this->handleDestroyAction($id, $request);
     }
 
 }
